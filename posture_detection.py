@@ -21,9 +21,9 @@ with mp_pose.Pose(
     # heavy 모델: model_complexity=2
     # full 모델: model_complexity=1
     # light 모델: model_complexity=0
+    model_complexity=1,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5,
-    model_complexity=2,
 ) as pose:
     while cap.isOpened():
         # 0번째 카메라 사용
@@ -62,7 +62,7 @@ with mp_pose.Pose(
                     shoulder_mid_z = (left_shoulder.z + right_shoulder.z) / 2
                     z_diff = nose.z - shoulder_mid_z
                     print(f"z 차이: {z_diff:.4f} 미터")
-                    if z_diff > 0.013:  # 임계값 조정 필요
+                    if z_diff > -0.04:  # 임계값 조정 필요
                         print("거북목이 감지 (z 좌표 기준)")
 
                 # CVA 기반 감지 (측면 뷰)
@@ -80,7 +80,8 @@ with mp_pose.Pose(
                         mp_pose.PoseLandmark.LEFT_EAR
                     ].y
                     cva = calculate_angle(shoulder_x, shoulder_y, ear_x, ear_y)
-                    if cva > 110:  # 임계값 조정 필요요
+                    print(f"CVA: {cva:.2f}도")
+                    if cva > 110:  # 임계값 조정 필요
                         print("거북목 감지 (CVA 기준)")
 
         cv2.imshow("MediaPipe Pose", cv2.flip(image, 1))
